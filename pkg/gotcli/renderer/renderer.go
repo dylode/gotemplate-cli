@@ -28,8 +28,7 @@ func (r Renderer) Render(streams cmd.IOStreams) error {
 	}
 
 	tmpl := template.New("gotcli")
-	_, err = tmpl.Parse(r.Input)
-	if err != nil {
+	if _, err = tmpl.Parse(r.Input); err != nil {
 		return err
 	}
 
