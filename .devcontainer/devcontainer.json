@@ -1,0 +1,4 @@
+{
+	"name": "gotemplate-cli",
+	"image": "mcr.microsoft.com/devcontainers/go:0-1.20"
+}
