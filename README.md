@@ -94,7 +94,7 @@ exit
 ]
 ```
 
-`gotcli render -j "$(docker network inspect my-network)" "$(cat frr/frr.conf.gotemplate)"`:
+`gotcli render -j "$(docker network inspect my-network)" "$(cat frr.conf.gotemplate)"`:
 
 ```
 frr version 8.5.2_git
