@@ -3,6 +3,8 @@ package renderer
 import (
 	"dylode/gotemplate-cli/pkg/gotcli/cmd"
 	rrenderer "dylode/gotemplate-cli/pkg/gotcli/renderer"
+	"errors"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +15,7 @@ func NewCommand(streams cmd.IOStreams) *cobra.Command {
 	var isFile bool
 
 	cmd := &cobra.Command{
-		Use:   "renderer",
+		Use:   "render",
 		Short: "Render go template",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -32,9 +34,26 @@ func NewCommand(streams cmd.IOStreams) *cobra.Command {
 
 func run(input string, jsonData string, yamlData string, isFile bool, streams cmd.IOStreams) error {
 	r := rrenderer.Renderer{
-		Input:    input,
-		DataType: rrenderer.JSON,
-		Data:     jsonData,
+		Input: input,
+	}
+
+	if len(jsonData) != 0 {
+		r.DataType = rrenderer.JSON
+		r.Data = jsonData
+	} else if len(yamlData) != 0 {
+		r.DataType = rrenderer.YAML
+		r.Data = yamlData
+	} else {
+		return errors.New("could not determine data type")
+	}
+
+	if isFile {
+		input, err := os.ReadFile(r.Input)
+		if err != nil {
+			return err
+		}
+
+		r.Input = string(input)
 	}
 
 	return r.Render(streams)
