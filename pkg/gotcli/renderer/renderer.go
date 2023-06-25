@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"text/template"
 
+	"github.com/Masterminds/sprig/v3"
 	"gopkg.in/yaml.v3"
 )
 
@@ -27,7 +28,7 @@ func (r Renderer) Render(streams cmd.IOStreams) error {
 		return err
 	}
 
-	tmpl := template.New("gotcli")
+	tmpl := template.New("gotcli").Funcs(sprig.FuncMap())
 	if _, err = tmpl.Parse(r.Input); err != nil {
 		return err
 	}
