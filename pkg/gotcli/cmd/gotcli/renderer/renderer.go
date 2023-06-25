@@ -33,8 +33,17 @@ func NewCommand(streams cmd.IOStreams) *cobra.Command {
 }
 
 func run(input string, jsonData string, yamlData string, isFile bool, streams cmd.IOStreams) error {
-	r := rrenderer.Renderer{
-		Input: input,
+	r := rrenderer.Renderer{}
+
+	if isFile {
+		fileContents, err := os.ReadFile(r.Input)
+		if err != nil {
+			return err
+		}
+
+		r.Input = string(fileContents)
+	} else {
+		r.Input = input
 	}
 
 	if len(jsonData) != 0 {
@@ -45,15 +54,6 @@ func run(input string, jsonData string, yamlData string, isFile bool, streams cm
 		r.Data = yamlData
 	} else {
 		return errors.New("could not determine data type")
-	}
-
-	if isFile {
-		input, err := os.ReadFile(r.Input)
-		if err != nil {
-			return err
-		}
-
-		r.Input = string(input)
 	}
 
 	return r.Render(streams)
